@@ -7,6 +7,7 @@ group 'word-filter-example'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
+mainClassName="WordFilter"
 
 repositories {
     mavenCentral()
@@ -24,14 +25,12 @@ dependencies {
 }
 
 run {
-    args = ["--project=PROJECT",
+    args = ["--project=YOUR_PROJECT",
             "--runner=DataflowRunner",
             "--maxNumWorkers=3",
             "--numWorkers=1",
             "--zone=australia-southeast1-a",
-            "--stagingLocation=STAGING_BUCKET",
-            "--tempLocation=TEMP_BUCKET",
-            "--bucket=FILES_BUCKET",
-            "--tableRef=TABLE_REF"]
+            "--stagingLocation=gs://YOUR_BUCKET/df-staging",
+            "--tempLocation=gs://YOUR_BUCKET/df-temp",
+            "--templateLocation=gs://YOUR_BUCKET/df-template"]
 }
-mainClassName="Main"

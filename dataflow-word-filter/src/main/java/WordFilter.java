@@ -4,6 +4,7 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.ValueProvider;
 import org.apache.beam.sdk.transforms.Distinct;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -46,11 +47,11 @@ public class WordFilter {
 
     private interface CustomOptions extends DataflowPipelineOptions {
 
-        String getBucket();
-        void setBucket(String bucket);
+        ValueProvider<String> getBucket();
+        void setBucket(ValueProvider<String> bucket);
 
-        String getTableRef();
-        void setTableRef(String tableRef);
+        ValueProvider<String> getTableRef();
+        void setTableRef(ValueProvider<String> tableRef);
 
     }
 
