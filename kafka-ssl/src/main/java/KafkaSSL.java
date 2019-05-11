@@ -10,9 +10,11 @@ import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +32,24 @@ public class KafkaSSL {
 
         pipeline.apply(Create.of(kvs))
                 .apply(KafkaIO.<Long, String>write()
-                        .withBootstrapServers("EXTERNAL_LB_IP:31090")
-                        .withTopic("secured-topic")
+                        .withBootstrapServers("EXT_IP:31090")
+                        .withTopic("secured-topic9")
                         .withKeySerializer(LongSerializer.class)
                         .withValueSerializer(StringSerializer.class)
                         .withProducerFactoryFn(props -> {
+
                             try {
-                                Files.copy(KafkaSSL.class.getClassLoader().getResourceAsStream("kafka.client1.keystore.jks"), Paths.get("/tmp/kafka.client1.keystore.jks"));
-                                Files.copy(KafkaSSL.class.getClassLoader().getResourceAsStream("kafka.client1.truststore.jks"), Paths.get("/tmp/kafka.client1.truststore.jks"));
-                            } catch(Exception e) {}
+                                Files.copy(KafkaSSL.class.getClassLoader()
+                                        .getResourceAsStream("kafka.client1.keystore.jks"),
+                                        Paths.get("/tmp/kafka.client1.keystore.jks"),
+                                        StandardCopyOption.REPLACE_EXISTING);
+                                Files.copy(KafkaSSL.class.getClassLoader()
+                                        .getResourceAsStream("kafka.client1.truststore.jks"),
+                                        Paths.get("/tmp/kafka.client1.truststore.jks"),
+                                        StandardCopyOption.REPLACE_EXISTING);
+                            } catch(IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
 
                             props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
                             props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, "/tmp/kafka.client1.truststore.jks");
