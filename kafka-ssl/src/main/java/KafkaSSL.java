@@ -32,8 +32,8 @@ public class KafkaSSL {
 
         pipeline.apply(Create.of(kvs))
                 .apply(KafkaIO.<Long, String>write()
-                        .withBootstrapServers("EXT_IP:31090")
-                        .withTopic("secured-topic9")
+                        .withBootstrapServers("broker0.kafka.ryancm.net:31090,broker1.kafka.ryancm.net:31090,broker2.kafka.ryancm.net:31090")
+                        .withTopic("secured-topic")
                         .withKeySerializer(LongSerializer.class)
                         .withValueSerializer(StringSerializer.class)
                         .withProducerFactoryFn(props -> {
